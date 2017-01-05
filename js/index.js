@@ -148,7 +148,7 @@ var app = {
 			else{
 				var btn = $(this);
 				btn.addClass("fa-spin");
-				db.transaction(function(tx) {
+				db.transaction(function(tx) {
 					tx.executeSql("select * from codigo", [], function(tx, results){
 						var total = 0;
 						var band = 0;
