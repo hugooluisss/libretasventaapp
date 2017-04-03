@@ -85,23 +85,22 @@ var app = {
 			}else if($("#txtPrecio").val() == ''){
 				alertify.error("Falta el precio");
 			}else{
-				var fotos = new Array();
+				/*var fotos = new Array();
 				fotos[1] = "";
 				
 				$("#lstImg").find("img").each(function(i){
 					fotos[i + 1] = $(this).attr("src2");
 				});
-				
+				*/
 				db.transaction(function(tx){
 					tx.executeSql("delete from producto where codigo = ?", [$("#txtCodigo").val()], function(tx, res){
 						var tel = window.localStorage.getItem("telefono");
 						console.log(tel);
 						$("#btnSave").prop("disabled", true);
-						tx.executeSql("INSERT INTO producto (codigo, descripcion, precio, foto1) VALUES (?,?,?,?)", [
+						tx.executeSql("INSERT INTO producto (codigo, descripcion, precio) VALUES (?,?,?)", [
 								$("#txtCodigo").val(), 
 								$("#txtDescripcion").val(), 
-								$("#txtPrecio").val(),
-								fotos[1]
+								$("#txtPrecio").val()
 							], function(tx, res) {
 								console.log("Código guardado");
 								alertify.success("Código almacenado");
@@ -124,7 +123,7 @@ var app = {
 				var btn = $(this);
 				btn.addClass("fa-spin");
 				db.transaction(function(tx){
-					tx.executeSql("select * from codigo", [], function(tx, results){
+					tx.executeSql("select * from producto", [], function(tx, results){
 						var total = 0;
 						var band = 0;
 						
@@ -135,7 +134,7 @@ var app = {
 								band++;
 								
 								var formData = new FormData();
-								formData.append("photo1", el.foto1);
+								//formData.append("photo1", el.foto1);
 								formData.append("descripcion", el.descripcion);
 
 								formData.append("codigo", el.codigo);
