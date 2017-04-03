@@ -137,7 +137,7 @@ var app = {
 								//formData.append("photo1", el.foto1);
 								formData.append("descripcion", el.descripcion);
 
-								formData.append("codigo", el.codigo);
+								formData.append("clave", el.codigo);
 								formData.append("precio", el.precio);
 								formData.append("movil", 1);
 								formData.append("action", "add");
