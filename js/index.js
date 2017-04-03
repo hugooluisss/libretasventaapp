@@ -17,6 +17,7 @@
  * under the License.
  */
 var db = null;
+var servidorweb = "http://192.168.2.4/libretasventasweb/"
 var app = {
 	// Application Constructor
 	initialize: function() {
@@ -42,7 +43,7 @@ var app = {
 			console.log("Conexión desde phonegap OK");
 			crearBD(db);
 		}catch(err){
-			alertify.error("No se pudo crear la base de datos con sqlite... se intentará trabajar con web");
+			console.log("No se pudo crear la base de datos con sqlite... se intentará trabajar con web");
 			db = window.openDatabase("libretainventario.db", "1.0", "Just a Dummy DB", 200000);
 			crearBD(db);
 			console.log("Se inicio la conexión a la base para web");
@@ -75,32 +76,6 @@ var app = {
 		});
 		
 		getShowCodigosPendientes();
-		
-		$("[action=getImagen]").click(function(){
-			if ($("#txtCodigo").val() == '')
-				alertify.error("Primero escanea el código");
-			else if ($("#lstImg").find("img").length < 1){
-				navigator.camera.getPicture(function(imageURI){
-					var img = $("<img />");
-									
-					$("#lstImg").append(img);
-					img.attr("src", "data:image/jpeg;base64," + imageURI);
-					img.attr("src2", imageURI);
-				}, function(message){
-					alertify.error("Ocurrio un error al subir la imagen");
-				}, { 
-					quality: 100,
-					//destinationType: Camera.DestinationType.FILE_URI,
-					destinationType: Camera.DestinationType.DATA_URL,
-					encodingType: Camera.EncodingType.JPEG,
-					targetWidth: 250,
-					targetHeight: 250,
-					correctOrientation: true,
-					allowEdit: false
-				});
-			}else
-				alertify.error("Solo permiten 1 imagen por código");
-		});
 		
 		$("#btnSave").click(function(){
 			if($("#txtCodigo").val() == ''){
@@ -148,7 +123,7 @@ var app = {
 			else{
 				var btn = $(this);
 				btn.addClass("fa-spin");
-				db.transaction(function(tx) {
+				db.transaction(function(tx){
 					tx.executeSql("select * from codigo", [], function(tx, results){
 						var total = 0;
 						var band = 0;
@@ -170,7 +145,7 @@ var app = {
 								formData.append("almacen", 1);
 								
 								$.ajax({
-									url: 'http://10.0.0.5/libretasventasapp/cproductos',
+									url: servidorweb + 'cproductos',
 									data: formData,
 									contentType: false,
 									processData: false,
@@ -183,9 +158,10 @@ var app = {
 										if (band == 0){
 											alertify.success("Se enviaron " + total + " códigos");
 											btn.removeClass("fa-spin");
-											db.transaction(function(tx) {
+											db.transaction(function(tx){
 												tx.executeSql("delete from producto", []);
 											});
+											
 											getShowCodigosPendientes();
 										}
 									}
